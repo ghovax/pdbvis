@@ -9,8 +9,3 @@ A 3D protein structure viewer written in Rust that loads and visualizes proteins
 - Interactive 3D controls with mouse
 - Coordinate axes for orientation
 - Zoom limits for better visualization
-
-## Installation
-
-```bash
-cargo

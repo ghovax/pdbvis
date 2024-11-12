@@ -1,0 +1,18 @@
+[package]
+name = "prot_vis_rs"
+version = "0.1.0"
+edition = "2021"
+authors = ["Giovanni Gravili <giovannigravili653@gmail.com>"]
+description = "A 3D protein structure viewer that loads and visualizes proteins from the Protein Data Bank (PDB)"
+license = "MIT"
+repository = "https://github.com/yourusername/prot_vis_rs"
+keywords = ["protein", "visualization", "pdb", "bioinformatics", "3d"]
+categories = ["science", "visualization"]
+documentation = "https://docs.rs/prot_vis_rs"
+
+[dependencies]
+reqwest = { version = "0.11", features = ["blocking"] }
+kiss3d = "0.35"  # 3D graphics library
+bio = "1.1"  # Bioinformatics library for parsing PDB files
+anyhow = "1.0"  # Error handling
+clap = { version = "4.4", features = ["derive"] }  # Command line argument parsing

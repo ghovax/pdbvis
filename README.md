@@ -1,4 +1,4 @@
-# prot_vis_rs
+# pdbvis
 
 A 3D protein structure viewer written in Rust that loads and visualizes proteins from the Protein Data Bank (PDB).
 
@@ -10,4 +10,7 @@ A 3D protein structure viewer written in Rust that loads and visualizes proteins
 - Coordinate axes for orientation
 - Zoom limits for better visualization
 
-## Installation 
+## Installation
+
+```bash
+cargo

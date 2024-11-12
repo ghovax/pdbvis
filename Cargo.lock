@@ -2066,6 +2066,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
 
 [[package]]
+name = "pdbvis"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bio",
+ "clap",
+ "kiss3d",
+ "reqwest",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "percent-encoding"
 version = "2.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2136,17 +2149,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f139b0662de085916d1fb67d2b4169d1addddda1919e696f3252b740b629986e"
 dependencies = [
  "unicode-ident",
-]
-
-[[package]]
-name = "prot_vis_rs"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "bio",
- "clap",
- "kiss3d",
- "reqwest",
 ]
 
 [[package]]

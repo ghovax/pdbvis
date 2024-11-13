@@ -5,25 +5,25 @@ use crate::pdb::{download_pdb, parse_pdb_from_string, Atom};
 pub struct Protein {
     pub atoms: Vec<Atom>,
     pub center: Point3<f32>,
-    pub max_radius: f32,
+    pub maximum_radius: f32,
 }
 
 impl Protein {
-    pub fn from_pdb_id_in_memory(id: &str) -> Result<Self> {
+    pub async fn from_pdb_id_in_memory(id: &str) -> Result<Self> {
         // Download PDB file directly into memory
-        let pdb_data = download_pdb(id)?;
+        let pdb_data = download_pdb(id).await?;
         
         // Parse PDB data from string
         let atoms = parse_pdb_from_string(&pdb_data)?;
         
         // Calculate center and radius
         let center = Self::calculate_center(&atoms);
-        let max_radius = Self::calculate_max_distance(&atoms, center);
+        let maximum_radius = Self::calculate_maximum_distance(&atoms, center);
         
         Ok(Self {
             atoms,
             center,
-            max_radius,
+            maximum_radius,
         })
     }
 
@@ -32,14 +32,14 @@ impl Protein {
             .filter(|atom| atom.atom_type == "CA")
             .collect();
         
-        let sum = ca_atoms.iter().fold(Vector3::zeros(), |acc, atom| {
-            acc + atom.position.coords
+        let sum = ca_atoms.iter().fold(Vector3::zeros(), |accumulator, atom| {
+            accumulator + atom.position.coords
         });
         
         Point3::from(sum / ca_atoms.len() as f32)
     }
 
-    fn calculate_max_distance(atoms: &[Atom], center: Point3<f32>) -> f32 {
+    fn calculate_maximum_distance(atoms: &[Atom], center: Point3<f32>) -> f32 {
         atoms.iter()
             .filter(|atom| atom.atom_type == "CA")
             .map(|atom| (atom.position - center).magnitude())

@@ -34,19 +34,19 @@ impl<'a> ProteinVisualizer<'a> {
         create_cartoon_visualization(protein, &mut cartoon_group);
 
         // Setup camera with better initial position
-        let camera_distance = protein.max_radius * 3.0;
+        let camera_distance = protein.maximum_radius * 3.0;
         let eye = Point3::new(camera_distance, camera_distance * 0.5, camera_distance);
         let mut camera = ArcBall::new(eye, Point3::origin());
         camera.set_up_axis(Vector3::new(0.0, 1.0, 0.0));
 
         // Set minimum distance (maximum zoom)
-        camera.set_min_dist(protein.max_radius * 1.0);
+        camera.set_min_dist(protein.maximum_radius * 1.0);
 
         // Set maximum distance (minimum zoom)
-        camera.set_max_dist(protein.max_radius * 5.0);
+        camera.set_max_dist(protein.maximum_radius * 5.0);
 
         // Create coordinate axes
-        let axes = create_axes(window, protein.max_radius * 0.5);
+        let axes = create_axes(window, protein.maximum_radius * 0.5);
 
         Ok(Self {
             window,
@@ -80,7 +80,7 @@ impl<'a> ProteinVisualizer<'a> {
 
     fn update_axes_position(&mut self) {
         let view = self.camera.view_transform();
-        let scale = self.protein.max_radius * 0.15;
+        let scale = self.protein.maximum_radius * 0.15;
 
         let offset = Vector3::new(
             self.window.size()[0] as f32 * 0.4,
@@ -88,7 +88,7 @@ impl<'a> ProteinVisualizer<'a> {
             0.0,
         );
 
-        for (i, axis) in self.axes.iter_mut().enumerate() {
+        for (_i, axis) in self.axes.iter_mut().enumerate() {
             axis.set_local_scale(scale, scale, scale);
             axis.set_local_rotation(view.rotation);
             axis.set_local_translation(Translation3::from(offset));
@@ -115,7 +115,7 @@ impl<'a> ProteinVisualizer<'a> {
     }
 }
 
-fn create_axes(window: &mut Window, size: f32) -> [SceneNode; 3] {
+fn create_axes(window: &mut Window, _size: f32) -> [SceneNode; 3] {
     let mut x_axis = window.add_cylinder(0.1, 1.0);
     let mut y_axis = window.add_cylinder(0.1, 1.0);
     let mut z_axis = window.add_cylinder(0.1, 1.0);
@@ -139,38 +139,54 @@ fn create_axes(window: &mut Window, size: f32) -> [SceneNode; 3] {
 }
 
 fn create_backbone_visualization(protein: &Protein, group: &mut SceneNode) {
-    let mut prev_point = None;
+    let mut previous_point = None;
     for atom in &protein.atoms {
         if atom.atom_type == "CA" {
             let centered_pos = atom.position - protein.center.coords;
             let mut sphere = group.add_sphere(0.5);
-            sphere.set_color(0.0, 0.7, 1.0);
+
+            // Color spheres based on temperature factor (B-factor)
+            let normalized_temp = atom.temperature_factor / 100.0; // Typical B-factor range 0-100
+            sphere.set_color(
+                normalized_temp,               // More red = higher temperature factor
+                0.7 * (1.0 - normalized_temp), // Less blue = higher temperature factor
+                1.0 - normalized_temp,         // Less green = higher temperature factor
+            );
+
+            // Scale sphere based on occupancy
+            let scale = atom.occupancy * 0.5;
+            sphere.set_local_scale(scale, scale, scale);
+
             sphere.set_local_translation(Translation3::from(centered_pos));
 
-            if let Some(prev) = prev_point {
+            if let Some(previous) = previous_point {
                 let mut line = group.add_cylinder(0.1, 1.0);
-                line.set_color(1.0, 1.0, 1.0);
+                // Color lines based on chain ID
+                match atom.chain_id {
+                    'A' => line.set_color(1.0, 0.0, 0.0), // Red for chain A
+                    'B' => line.set_color(0.0, 1.0, 0.0), // Green for chain B
+                    _ => line.set_color(0.0, 0.0, 1.0),   // Blue for other chains
+                }
 
-                let direction = centered_pos - prev;
-                let mid_point = prev + direction * 0.5;
-
-                line.set_local_translation(Translation3::from(mid_point));
+                let direction = centered_pos - previous;
+                let middle_point = previous + direction * 0.5;
+                line.set_local_translation(Translation3::from(middle_point));
             }
-            prev_point = Some(centered_pos);
+            previous_point = Some(centered_pos);
         }
     }
 }
 
 fn create_cartoon_visualization(protein: &Protein, group: &mut SceneNode) {
-    let mut prev_point = None;
-    let mut prev_direction = None;
+    let mut previous_point = None;
+    let mut previous_direction = None;
 
     for atom in &protein.atoms {
         if atom.atom_type == "CA" {
             let centered_pos = atom.position - protein.center.coords;
 
-            if let Some(prev) = prev_point {
-                let direction: Vector3<f32> = centered_pos - prev;
+            if let Some(previous) = previous_point {
+                let direction: Vector3<f32> = centered_pos - previous;
                 let length = direction.magnitude();
 
                 // Create ribbon segment (thinner and taller)
@@ -178,20 +194,20 @@ fn create_cartoon_visualization(protein: &Protein, group: &mut SceneNode) {
                 ribbon.set_color(0.0, 0.8, 0.2);
 
                 // Position at midpoint
-                let mid_point = prev + direction * 0.5;
-                ribbon.set_local_translation(Translation3::from(mid_point));
+                let middle_point = previous + direction * 0.5;
+                ribbon.set_local_translation(Translation3::from(middle_point));
 
                 // Orient ribbon
-                if let Some(_prev_dir) = prev_direction {
+                if let Some(_previous_direction) = previous_direction {
                     let rotation =
                         UnitQuaternion::rotation_between(&Vector3::z(), &direction.normalize())
                             .unwrap_or(UnitQuaternion::identity());
                     ribbon.set_local_rotation(rotation);
                 }
 
-                prev_direction = Some(direction);
+                previous_direction = Some(direction);
             }
-            prev_point = Some(centered_pos);
+            previous_point = Some(centered_pos);
         }
     }
 }

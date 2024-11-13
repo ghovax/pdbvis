@@ -16,7 +16,7 @@ use crate::visualization::ProteinVisualizer;
 #[command(author, version, about, long_about = None)]
 struct Args {
     /// PDB ID of the protein to visualize (e.g., 8KEX)
-    #[arg(help = "PDB ID of the protein to visualize (e.g., 8KEX)")]
+    #[arg(long, help = "PDB ID of the protein to visualize (e.g., 8KEX)")]
     pdb_id: String,
 }
 

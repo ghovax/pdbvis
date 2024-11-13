@@ -1,6 +1,6 @@
 [package]
 name = "pdbvis"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Giovanni Gravili <giovannigravili653@gmail.com>"]
 description = "A 3D protein structure viewer that loads and visualizes proteins from the Protein Data Bank (PDB)"

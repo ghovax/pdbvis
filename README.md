@@ -1,60 +1,27 @@
 # pdbvis
 
-A fast and lightweight 3D protein structure viewer that loads and visualizes proteins directly from the Protein Data Bank (PDB).
+A high-performance 3D molecular visualization tool for rendering and analyzing protein structures from the Protein Data Bank (PDB).
 
-## Features
+## Overview
 
-- Direct loading from PDB database using protein IDs
-- Interactive 3D visualization with:
-  - Backbone view mode
-  - Cartoon view mode
-- Real-time view mode switching
-- Coordinate axes display
-- Camera controls:
-  - Zoom with mouse wheel
-  - Rotate by dragging
-  - Pan with right-click drag
+pdbvis provides real-time, interactive visualization of protein structures with multiple representation modes and intuitive camera controls. The application emphasizes efficiency and ease-of-use while maintaining scientific accuracy.
 
 ## Installation
 
-Ensure you have Rust installed ([rustup.rs](https://rustup.rs/)), then:
-
 ```bash
 cargo install pdbvis
+```
+
+## Usage
+
+```bash
+# Visualize a protein structure
+pdbvis --pdb-id 8KEX
+
+# Get help
 pdbvis --help
 ```
 
-## Dependencies
+## Controls
 
-- [kiss3d](https://github.com/sebcrozet/kiss3d) - Keep It Simple, Stupid 3D graphics engine
-- [reqwest](https://github.com/seanmonstar/reqwest) - HTTP client for PDB downloads
-- [clap](https://github.com/clap-rs/clap) - Command line argument parsing
-- [serde](https://github.com/serde-rs/serde) - Data serialization
-
-### Controls
-
-- **Mouse Controls**:
-  - Left click + drag: Rotate view
-  - Right click + drag: Pan view
-  - Mouse wheel: Zoom in/out
-- **Keyboard Controls**:
-  - `;` (semicolon): Toggle between backbone and cartoon view
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## Acknowledgments
-
-- [RCSB Protein Data Bank](https://www.rcsb.org/) for providing protein structure data
-- The Rust community for excellent libraries and tools
+Use the `;` key to toggle between backbone and cartoon view modes. Drag with the mouse to rotate the view, right-click + drag to pan, and use the mouse wheel to zoom in and out.
